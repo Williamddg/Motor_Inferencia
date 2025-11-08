@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grisclaro"
-    tools:context=".MainActivity">
+    tools:context=".Nueva_condicion">
 
     <!-- Contenedor principal -->
     <FrameLayout
@@ -37,13 +37,39 @@
                     android:id="@+id/textViewTitulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ingresar Datos"
+                    android:text="Agregar Condicion"
                     android:textAlignment="center"
                     android:textColor="@color/azul1"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="25dp" />
+
+                <!-- elegir regla -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Regla"
+                    android:textColor="@color/negro"
+                    android:layout_marginTop="20dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_regla"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <!-- elegir y o -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Y /O"
+                    android:textColor="@color/negro"
+                    android:layout_marginTop="20dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_y_o"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <!-- Atributo -->
                 <TextView
@@ -64,7 +90,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Equivalencia"
+                    android:text="Igualdad"
                     android:textColor="@color/negro"
                     android:layout_marginTop="20dp" />
 
@@ -91,10 +117,10 @@
 
                 <!-- Botón -->
                 <Button
-                    android:id="@+id/btn_agregar_regla"
+                    android:id="@+id/btn_agregar_condicion"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:text="Agregar Regla"
+                    android:text="Agregar Condicion"
                     android:textColor="@color/blanco"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -128,7 +154,7 @@
                 android:layout_weight="1"
                 android:text="Nueva\nRegla"
                 android:textAlignment="center"
-                android:textColor="@color/azul1"
+                android:textColor="@color/negro"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -139,7 +165,7 @@
                 android:layout_weight="1"
                 android:text="Nueva\nCondición"
                 android:textAlignment="center"
-                android:textColor="@color/negro"
+                android:textColor="@color/azul1"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 

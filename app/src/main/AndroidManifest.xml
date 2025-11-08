@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MotorInferencia">
         <activity
+            android:name=".Nueva_condicion"
+            android:exported="false" />
+        <activity
+            android:name=".Grafo"
+            android:exported="false" />
+        <activity
+            android:name=".Resultados"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
