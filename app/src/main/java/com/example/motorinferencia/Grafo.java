@@ -15,10 +15,12 @@ public class Grafo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_grafo);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        // button btn_generar genera grafo
+        // textview menu1 lanza actvity mainactivity
+        // textview menu2 lanza actovity nueva_condicion
+        // textview menu3 lanza activitys resultados
+        // textview menu4 refresca activity
+
     }
 }
