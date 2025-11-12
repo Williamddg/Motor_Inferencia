@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blanco">#FFFFFF</color>
+    <color name="negro">#101010</color>
+    <color name="grisoscuro">#2B2B2B</color>
+    <color name="grisclaro">#D9D9D9</color>
+    <color name="azul1">#0A3D91</color>     <!-- Azul profundo, más elegante -->
+    <color name="azul2">#1C5DB6</color>     <!-- Azul medio más visible -->
+    <color name="acento">#1E88E5</color>    <!-- Azul brillante -->
+    <color name="naranja">#FF7043</color>   <!-- Acento cálido -->
+</resources>

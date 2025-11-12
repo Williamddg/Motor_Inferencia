@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grisclaro"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/framePrincipal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ScrollView
+            android:id="@+id/scrollContenido"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="16dp"
+            android:paddingBottom="85dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/textViewTitulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingresar Datos"
+                    android:textAlignment="center"
+                    android:textColor="@color/azul1"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="25dp" />
+
+                <!-- Atributo -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Atributo"
+                    android:textColor="@color/grisoscuro"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/txt_atributo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Variable"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/acento"
+                    android:backgroundTint="@color/azul2"
+                    android:padding="10dp" />
+
+                <!-- Equivalencia -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Equivalencia"
+                    android:textColor="@color/grisoscuro"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_igualdad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/azul2"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="@color/blanco"
+                    android:theme="@style/SpinnerTextoOscuro" />
+
+                <!-- Valor -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Valor"
+                    android:textColor="@color/grisoscuro"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp" />
+
+                <EditText
+                    android:id="@+id/txt_valor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="xxx"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/acento"
+                    android:backgroundTint="@color/azul2"
+                    android:padding="10dp" />
+
+                <!-- Botón principal -->
+                <Button
+                    android:id="@+id/btn_agregar_regla"
+                    style="@style/BotonPrincipal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="Agregar Regla"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="40dp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Menú inferior -->
+        <LinearLayout
+            android:id="@+id/menuInferior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_gravity="bottom"
+            android:background="@color/azul1"
+            android:elevation="6dp"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/menu1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nueva\nRegla"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nueva\nCondición"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Inferir"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Grafo"
+                android:textAlignment="center"
+                android:textColor="@color/naranja"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

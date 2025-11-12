@@ -1,0 +1,22 @@
+# Android / Gradle / Kotlin
+.gradle/
+build/
+**/build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+/out/
+captures/
+.cxx/
+.externalNativeBuild/
+
+# Cache de Android Studio
+caches/
+wrapper/
+**/generated/
+**/transforms/
+**/intermediates/
+**/tmp/
+**/kotlin/
+**/.gradle/

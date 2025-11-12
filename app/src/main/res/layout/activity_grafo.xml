@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grisclaro"
+    tools:context=".Grafo">
+
+    <FrameLayout
+        android:id="@+id/framePrincipal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Contenido desplazable -->
+        <ScrollView
+            android:id="@+id/scrollContenido"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="16dp"
+            android:paddingBottom="85dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 🔹 Título -->
+                <TextView
+                    android:id="@+id/textViewTitulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Visualización del Grafo"
+                    android:textAlignment="center"
+                    android:textColor="@color/azul1"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="25dp" />
+
+                <!-- 🔹 Botón -->
+                <Button
+                    android:id="@+id/btn_generar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="Generar Grafo"
+                    android:textColor="@color/blanco"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/azul2"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="40dp" />
+
+                <!-- 🔹 Contenedor del grafo -->
+                <FrameLayout
+                    android:id="@+id/contenedorGrafo"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:background="@color/blanco"
+                    android:elevation="4dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- 🔹 Menú inferior -->
+        <LinearLayout
+            android:id="@+id/menuInferior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_gravity="bottom"
+            android:background="@color/azul1"
+            android:elevation="6dp"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/menu1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nueva\nRegla"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nueva\nCondición"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Inferir"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/menu4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Grafo"
+                android:textAlignment="center"
+                android:textColor="@color/naranja"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

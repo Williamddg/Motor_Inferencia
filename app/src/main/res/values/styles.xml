@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema general -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <!-- 🔹 Estilo para los Spinners -->
+    <style name="SpinnerTextoOscuro" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/negro</item>
+        <item name="android:textColorPrimary">@color/negro</item>
+        <item name="android:textColorHint">@color/grisoscuro</item>
+        <item name="android:popupBackground">@color/blanco</item>
+        <item name="android:backgroundTint">@color/azul2</item>
+    </style>
+
+    <!-- 🔹 Botones con color y contraste correcto -->
+    <style name="BotonPrincipal" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/azul2</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>
