@@ -5,15 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Motor de inferencia con encadenamiento hacia adelante.
- * Usa la base de conocimiento (reglas) y hechos iniciales.
- */
 public class MotorInferencia {
 
     private BaseConocimiento base;
-    private Set<String> hechos; // hechos conocidos (memoria de trabajo)
-    private List<String> trazas; // registro del razonamiento
+    private Set<hecho> hechos; // Usar objetos 'hecho' para incluir certeza
+    private List<String> trazas;
+
+    // Umbral para considerar una condición como "verdadera"
+    private static final double UMBRAL_CERTEZA = 0.2;
 
     public MotorInferencia(BaseConocimiento base) {
         this.base = base;
@@ -21,95 +20,77 @@ public class MotorInferencia {
         this.trazas = new ArrayList<>();
     }
 
-    /** Agrega un hecho inicial (ejemplo: "temperatura = 30") */
-    public void agregarHecho(String hecho) {
-        hechos.add(hecho.trim().toLowerCase());
+    public void agregarHecho(hecho h) {
+        hechos.add(h);
     }
 
-    /** Ejecuta la inferencia (encadenamiento hacia adelante) */
     public List<String> ejecutar() {
         trazas.clear();
-
         boolean nuevaInferencia;
         int iteracion = 1;
 
         do {
             nuevaInferencia = false;
-            trazas.add("🔁 Iteración " + iteracion + ":");
+            trazas.add("Iteración " + iteracion + ":");
             iteracion++;
 
             for (Regla regla : base.getReglas()) {
+                double certezaMinima = 1.0; // Certeza de la conclusión de la regla
                 boolean cumpleTodas = true;
 
                 for (Condicion c : regla.getCondiciones()) {
-                    String expresion = (c.getAtributo() + " " + c.getOperador() + " " + c.getValor()).toLowerCase();
+                    hecho hechoCoincidente = verificarHecho(c);
 
-                    if (!verificarHecho(c)) {
-                        cumpleTodas = false;
-                        trazas.add("   ❌ No cumple: " + expresion);
-                        break;
+                    if (hechoCoincidente != null && hechoCoincidente.getCerteza() > UMBRAL_CERTEZA) {
+                        trazas.add("   ✅ Cumple: " + c.toString() + " (Certeza: " + String.format("%.2f", hechoCoincidente.getCerteza()) + ")");
+                        certezaMinima = Math.min(certezaMinima, hechoCoincidente.getCerteza());
                     } else {
-                        trazas.add("   ✅ Cumple: " + expresion);
+                        cumpleTodas = false;
+                        trazas.add("   ❌ No cumple: " + c.toString());
+                        break;
                     }
                 }
 
-                if (cumpleTodas && !hechos.contains(regla.getResultado().toLowerCase())) {
-                    hechos.add(regla.getResultado().toLowerCase());
-                    trazas.add("   ➕ Nueva inferencia: " + regla.getResultado());
-                    nuevaInferencia = true;
+                if (cumpleTodas) {
+                    // Extraer atributo y valor del resultado de la regla
+                    String[] partesResultado = regla.getResultado().split(" ");
+                    if (partesResultado.length >= 3) {
+                        String atributoRes = partesResultado[0];
+                        String valorRes = partesResultado[2];
+                        hecho nuevoHecho = new hecho(atributoRes, valorRes, certezaMinima);
+
+                        if (!hechos.contains(nuevoHecho)) {
+                            hechos.add(nuevoHecho);
+                            trazas.add("   🎯 Nueva inferencia: " + nuevoHecho.toString());
+                            nuevaInferencia = true;
+                        }
+                    }
                 }
             }
-
             trazas.add("-----------------------------");
         } while (nuevaInferencia);
 
-        trazas.add("✅ Inferencia finalizada.");
-        trazas.add("📘 Hechos finales:");
-        for (String h : hechos) {
-            trazas.add("   • " + h);
+        trazas.add("✅ Inferencia finalizada\n");
+        trazas.add("\n🧩 Hechos base:");
+        for (hecho h : hechos) {
+            trazas.add("   • " + h.toString());
         }
 
         return trazas;
     }
 
-    /** Verifica si una condición se cumple con los hechos actuales */
-    private boolean verificarHecho(Condicion condicion) {
-        // Se busca un hecho que coincida con el atributo
-        for (String hecho : hechos) {
-            String[] partes = hecho.split(" ");
-            if (partes.length >= 3) {
-                String atributo = partes[0];
-                String operador = partes[1];
-                String valor = partes[2];
-
-                if (atributo.equalsIgnoreCase(condicion.getAtributo())) {
-                    try {
-                        double actual = Double.parseDouble(valor);
-                        double esperado = Double.parseDouble(condicion.getValor());
-
-                        switch (condicion.getOperador()) {
-                            case "=":
-                                return actual == esperado;
-                            case ">":
-                                return actual > esperado;
-                            case "<":
-                                return actual < esperado;
-                            case ">=":
-                                return actual >= esperado;
-                            case "<=":
-                                return actual <= esperado;
-                            case "!=":
-                                return actual != esperado;
-                            default:
-                                return false;
-                        }
-                    } catch (NumberFormatException e) {
-                        // Comparación textual
-                        return valor.equalsIgnoreCase(condicion.getValor());
-                    }
+    private hecho verificarHecho(Condicion condicion) {
+        for (hecho h : hechos) {
+            if (h.getAtributo().equalsIgnoreCase(condicion.getAtributo())) {
+                // La condición se evalúa contra el valor del hecho
+                if (condicion.evaluar(h.getValor())) {
+                    return h; // Devuelve el hecho si la condición es verdadera
                 }
             }
         }
-        return false;
+        return null; // No se encontró un hecho que cumpla la condición
+    }
+     public Set<hecho> getHechos() {
+        return hechos;
     }
 }

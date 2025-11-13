@@ -3,14 +3,18 @@ package com.example.motorinferencia.motor;
 public class hecho {
     private String atributo;
     private String valor;
+    private double certeza;
 
-    public hecho(String atributo, String valor) {
+    public hecho(String atributo, String valor, double certeza) {
         this.atributo = atributo;
         this.valor = valor;
+        this.certeza = certeza;
     }
 
     public String getAtributo() { return atributo; }
     public String getValor() { return valor; }
+    public double getCerteza() { return certeza; }
+    public void setCerteza(double certeza) { this.certeza = certeza; }
 
     @Override
     public boolean equals(Object o) {
@@ -27,6 +31,6 @@ public class hecho {
 
     @Override
     public String toString() {
-        return atributo + " = " + valor;
+        return atributo + " = " + valor + " (Certeza: " + String.format("%.2f", certeza) + ")";
     }
 }
