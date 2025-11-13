@@ -40,7 +40,15 @@ public class Grafo extends AppCompatActivity {
         contenedorGrafo = (LinearLayout) scroll.getChildAt(0);
 
         if (getIntent().hasExtra("hechos")) {
-            hechosFinales = (HashSet<hecho>) getIntent().getSerializableExtra("hechos");
+            // 💡 CAMBIO CLAVE: Castear a Set<hecho> y no directamente a HashSet<hecho>
+            Object serializableHechos = getIntent().getSerializableExtra("hechos");
+            if (serializableHechos instanceof Set) {
+                // Se asume que el contenido es hecho, aunque no se puede verificar por el cast de tipo genérico
+                // Esto es más seguro que el cast directo a HashSet.
+                hechosFinales = (Set<hecho>) serializableHechos;
+            } else {
+                Toast.makeText(this, "Error al cargar hechos: formato incorrecto.", Toast.LENGTH_LONG).show();
+            }
         }
 
         BaseConocimiento base = BaseConocimiento.getInstancia();
@@ -102,7 +110,7 @@ public class Grafo extends AppCompatActivity {
 
     private void generarVistaHechos() {
         TextView tituloHechos = new TextView(this);
-        tituloHechos.setText("Hechos Finales (Conclusiones)");
+        tituloHechos.setText("Hechos");
         tituloHechos.setTextSize(20);
         tituloHechos.setTextColor(Color.BLACK);
         tituloHechos.setPadding(10, 30, 10, 10);

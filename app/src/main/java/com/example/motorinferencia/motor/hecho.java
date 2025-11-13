@@ -1,6 +1,7 @@
 package com.example.motorinferencia.motor;
 
-public class hecho {
+import java.io.Serializable;
+public class hecho implements Serializable{
     private String atributo;
     private String valor;
     private double certeza;
