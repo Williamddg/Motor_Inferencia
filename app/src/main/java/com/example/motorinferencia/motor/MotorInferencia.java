@@ -12,7 +12,7 @@ public class MotorInferencia {
     private List<String> trazas;
 
     // Umbral para considerar una condición como "verdadera"
-    private static final double UMBRAL_CERTEZA = 0.2;
+    private static final double UMBRAL_CERTEZA = 0.0;
 
     public MotorInferencia(BaseConocimiento base) {
         this.base = base;

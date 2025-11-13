@@ -104,8 +104,18 @@ public class Resultados extends AppCompatActivity {
         Condicion condicion = condiciones.get(index);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Nivel de Certeza");
-        builder.setMessage("¿Qué tan cierto es que: " + condicion.toString() + "?\n\n-1: Totalmente Falso\n0: No se sabe\n1: Totalmente Verdadero");
-
+        builder.setMessage("¿Qué tan cierto es que: " + condicion.toString() + "?\n\n" +
+                "-1.0: Totalmente Falso\n" +
+                "-0.8: Casi Falso\n" +
+                "-0.6: Probablemente Falso\n" +
+                "-0.4: Algo Falso\n" +
+                "-0.2: Ligeramente Falso\n" +
+                " 0.0: No se sabe (Neutro)\n" +
+                " 0.2: Ligeramente Verdadero\n" +
+                " 0.4: Algo Verdadero\n" +
+                " 0.6: Probablemente Verdadero\n" +
+                " 0.8: Casi Verdadero\n" +
+                " 1.0: Totalmente Verdadero");
         final LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 20, 50, 20);
