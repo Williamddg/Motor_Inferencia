@@ -4,25 +4,23 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.motorinferencia.motor.BaseConocimiento;
-import com.example.motorinferencia.motor.Condicion;
-import com.example.motorinferencia.motor.Regla;
+import com.example.motorinferencia.motor.MotorInferencia.InferenceStep;
 import com.example.motorinferencia.motor.hecho;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Grafo extends AppCompatActivity {
 
     private LinearLayout contenedorGrafo;
     private Button btnGenerar;
-    private Set<hecho> hechosFinales;
+    private List<InferenceStep> inferenceGraph;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -39,27 +37,17 @@ public class Grafo extends AppCompatActivity {
         ScrollView scroll = findViewById(R.id.scrollContenido);
         contenedorGrafo = (LinearLayout) scroll.getChildAt(0);
 
-        if (getIntent().hasExtra("hechos")) {
-            // 💡 CAMBIO CLAVE: Castear a Set<hecho> y no directamente a HashSet<hecho>
-            Object serializableHechos = getIntent().getSerializableExtra("hechos");
-            if (serializableHechos instanceof Set) {
-                // Se asume que el contenido es hecho, aunque no se puede verificar por el cast de tipo genérico
-                // Esto es más seguro que el cast directo a HashSet.
-                hechosFinales = (Set<hecho>) serializableHechos;
-            } else {
-                Toast.makeText(this, "Error al cargar hechos: formato incorrecto.", Toast.LENGTH_LONG).show();
-            }
+        if (getIntent().hasExtra("inferenceGraph")) {
+            inferenceGraph = (List<InferenceStep>) getIntent().getSerializableExtra("inferenceGraph");
         }
 
-        BaseConocimiento base = BaseConocimiento.getInstancia();
-
         btnGenerar.setOnClickListener(v -> {
-            contenedorGrafo.removeAllViews();
-            generarVistaReglas(base.getReglas());
-            if (hechosFinales != null && !hechosFinales.isEmpty()) {
-                generarVistaHechos();
+            if (inferenceGraph != null && !inferenceGraph.isEmpty()) {
+                generarVistaGrafo();
+                Toast.makeText(this, "Grafo de inferencia generado", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "No hay un grafo de inferencia para mostrar", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(this, "Grafo generado", Toast.LENGTH_SHORT).show();
         });
 
         menu1.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
@@ -68,72 +56,94 @@ public class Grafo extends AppCompatActivity {
         menu4.setOnClickListener(v -> recreate());
     }
 
-    private void generarVistaReglas(List<Regla> reglas) {
-        if (reglas.isEmpty()) {
-            Toast.makeText(this, "No hay reglas para mostrar", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void generarVistaGrafo() {
+        contenedorGrafo.removeAllViews();
+        if (inferenceGraph == null || inferenceGraph.isEmpty()) return;
 
-        for (Regla r : reglas) {
-            LinearLayout bloqueRegla = new LinearLayout(this);
-            bloqueRegla.setOrientation(LinearLayout.VERTICAL);
-            bloqueRegla.setPadding(20, 20, 20, 20);
-            bloqueRegla.setBackgroundColor(Color.parseColor("#E3F2FD"));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(0, 10, 0, 20);
-            bloqueRegla.setLayoutParams(params);
+        int maxIteracion = inferenceGraph.stream().mapToInt(s -> s.iteracion).max().orElse(0);
 
-            TextView nodoRegla = new TextView(this);
-            nodoRegla.setText("Regla: " + r.getNombre());
-            nodoRegla.setTextColor(Color.parseColor("#0D47A1"));
-            nodoRegla.setTextSize(18);
-            bloqueRegla.addView(nodoRegla);
+        for (int i = 1; i <= maxIteracion; i++) {
+            final int currentIteracion = i;
+            List<InferenceStep> stepsInIteracion = inferenceGraph.stream()
+                    .filter(s -> s.iteracion == currentIteracion)
+                    .collect(Collectors.toList());
 
-            for (Condicion c : r.getCondiciones()) {
-                TextView nodoCond = new TextView(this);
-                nodoCond.setText("   └── " + c.toString());
-                nodoCond.setTextColor(Color.parseColor("#1B5E20"));
-                bloqueRegla.addView(nodoCond);
+            if (stepsInIteracion.isEmpty()) continue;
+
+            LinearLayout bloqueIteracion = new LinearLayout(this);
+            bloqueIteracion.setOrientation(LinearLayout.VERTICAL);
+            bloqueIteracion.setPadding(10, 10, 10, 10);
+            LinearLayout.LayoutParams paramsIter = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            paramsIter.setMargins(0, 20, 0, 20);
+            bloqueIteracion.setLayoutParams(paramsIter);
+            bloqueIteracion.setBackgroundColor(Color.parseColor("#ECEFF1")); // Light grey
+
+            TextView tituloIteracion = new TextView(this);
+            tituloIteracion.setText("Iteración " + currentIteracion);
+            tituloIteracion.setTextSize(22);
+            tituloIteracion.setTextColor(Color.BLACK);
+            tituloIteracion.setPadding(10, 10, 10, 20);
+            bloqueIteracion.addView(tituloIteracion);
+
+            for (InferenceStep step : stepsInIteracion) {
+                LinearLayout bloquePaso = new LinearLayout(this);
+                bloquePaso.setOrientation(LinearLayout.VERTICAL);
+                bloquePaso.setGravity(Gravity.CENTER_HORIZONTAL);
+                bloquePaso.setPadding(20, 20, 20, 20);
+                bloquePaso.setBackgroundColor(Color.parseColor("#FFFFFF")); // White
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(0, 10, 0, 10);
+                bloquePaso.setLayoutParams(params);
+
+                LinearLayout inputsLayout = new LinearLayout(this);
+                inputsLayout.setOrientation(LinearLayout.VERTICAL); // Changed to VERTICAL
+                inputsLayout.setGravity(Gravity.CENTER);
+
+                for (hecho h : step.condicionesSatisfechas) {
+                    TextView inputNode = new TextView(this);
+                    inputNode.setText(h.getAtributo());
+                    inputNode.setPadding(30, 20, 30, 20);
+                    inputNode.setBackgroundColor(Color.parseColor("#B3E5FC")); // Light blue
+                    inputNode.setTextColor(Color.BLACK);
+                    inputNode.setGravity(Gravity.CENTER);
+                    LinearLayout.LayoutParams nodeParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    nodeParams.setMargins(10, 10, 10, 10);
+                    inputNode.setLayoutParams(nodeParams);
+                    inputsLayout.addView(inputNode);
+                }
+                bloquePaso.addView(inputsLayout);
+
+                TextView reglaConFlecha = new TextView(this);
+                reglaConFlecha.setText("↓ " + step.regla.getNombre() + " ↓");
+                reglaConFlecha.setTextColor(Color.parseColor("#009688")); // Teal
+                reglaConFlecha.setGravity(Gravity.CENTER);
+                reglaConFlecha.setTextSize(16);
+                reglaConFlecha.setPadding(0, 20, 0, 20);
+                bloquePaso.addView(reglaConFlecha);
+
+                TextView outputNode = new TextView(this);
+                outputNode.setText(step.resultado.getAtributo());
+                outputNode.setPadding(30, 20, 30, 20);
+                outputNode.setBackgroundColor(Color.parseColor("#C8E6C9")); // Light green
+                outputNode.setTextColor(Color.BLACK);
+                outputNode.setGravity(Gravity.CENTER);
+                LinearLayout.LayoutParams outputNodeParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                outputNodeParams.setMargins(10, 10, 10, 10);
+                outputNode.setLayoutParams(outputNodeParams);
+                bloquePaso.addView(outputNode);
+
+                bloqueIteracion.addView(bloquePaso);
             }
-
-            TextView resultado = new TextView(this);
-            resultado.setText("      ↳ Resultado: " + r.getResultado());
-            resultado.setTextColor(Color.parseColor("#E65100"));
-            bloqueRegla.addView(resultado);
-
-            contenedorGrafo.addView(bloqueRegla);
-        }
-    }
-
-    private void generarVistaHechos() {
-        TextView tituloHechos = new TextView(this);
-        tituloHechos.setText("Hechos");
-        tituloHechos.setTextSize(20);
-        tituloHechos.setTextColor(Color.BLACK);
-        tituloHechos.setPadding(10, 30, 10, 10);
-        contenedorGrafo.addView(tituloHechos);
-
-        for (hecho h : hechosFinales) {
-            LinearLayout bloqueHecho = new LinearLayout(this);
-            bloqueHecho.setOrientation(LinearLayout.VERTICAL);
-            bloqueHecho.setPadding(20, 10, 20, 10);
-            bloqueHecho.setBackgroundColor(Color.parseColor("#FFF9C4")); // Amarillo claro
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(0, 5, 0, 5);
-            bloqueHecho.setLayoutParams(params);
-
-            TextView nodoHecho = new TextView(this);
-            nodoHecho.setText("▶ " + h.toString());
-            nodoHecho.setTextColor(Color.parseColor("#F57F17")); // Ámbar
-            nodoHecho.setTextSize(16);
-            bloqueHecho.addView(nodoHecho);
-            contenedorGrafo.addView(bloqueHecho);
+            contenedorGrafo.addView(bloqueIteracion);
         }
     }
 }

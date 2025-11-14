@@ -1,5 +1,6 @@
 package com.example.motorinferencia.motor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,9 +8,25 @@ import java.util.Set;
 
 public class MotorInferencia {
 
+    // Clase para representar un paso en la inferencia
+    public static class InferenceStep implements Serializable {
+        public final Regla regla;
+        public final List<hecho> condicionesSatisfechas;
+        public final hecho resultado;
+        public final int iteracion;
+
+        public InferenceStep(Regla regla, List<hecho> condiciones, hecho resultado, int iteracion) {
+            this.regla = regla;
+            this.condicionesSatisfechas = condiciones;
+            this.resultado = resultado;
+            this.iteracion = iteracion;
+        }
+    }
+
     private BaseConocimiento base;
     private Set<hecho> hechos; // Usar objetos 'hecho' para incluir certeza
     private List<String> trazas;
+    private List<InferenceStep> inferenceGraph; // Grafo de inferencia
 
     // Umbral para considerar una condición como "verdadera"
     private static final double UMBRAL_CERTEZA = 0.0;
@@ -18,6 +35,7 @@ public class MotorInferencia {
         this.base = base;
         this.hechos = new HashSet<>();
         this.trazas = new ArrayList<>();
+        this.inferenceGraph = new ArrayList<>();
     }
 
     public void agregarHecho(hecho h) {
@@ -26,33 +44,50 @@ public class MotorInferencia {
 
     public List<String> ejecutar() {
         trazas.clear();
+        inferenceGraph.clear();
         boolean nuevaInferencia;
         int iteracion = 1;
 
         do {
             nuevaInferencia = false;
             trazas.add("Iteración " + iteracion + ":");
-            iteracion++;
 
             for (Regla regla : base.getReglas()) {
-                double certezaMinima = 1.0; // Certeza de la conclusión de la regla
-                boolean cumpleTodas = true;
+                boolean cumpleRegla = false;
+                double certezaMinima = 1.0;
+                List<hecho> hechosCondicion = new ArrayList<>();
 
-                for (Condicion c : regla.getCondiciones()) {
-                    hecho hechoCoincidente = verificarHecho(c);
+                boolean esDisyuntiva = !regla.getCondiciones().isEmpty()
+                        && "O".equalsIgnoreCase(regla.getCondiciones().get(0).getConector());
 
-                    if (hechoCoincidente != null && hechoCoincidente.getCerteza() > UMBRAL_CERTEZA) {
-                        trazas.add("   ✅ Cumple: " + c.toString() + " (Certeza: " + String.format("%.2f", hechoCoincidente.getCerteza()) + ")");
-                        certezaMinima = Math.min(certezaMinima, hechoCoincidente.getCerteza());
-                    } else {
-                        cumpleTodas = false;
-                        trazas.add("   ❌ No cumple: " + c.toString());
-                        break;
+                if (esDisyuntiva) {
+                    for (Condicion c : regla.getCondiciones()) {
+                        hecho h = verificarHecho(c);
+                        if (h != null && h.getCerteza() > UMBRAL_CERTEZA && c.evaluar(h.getValor())) {
+                            cumpleRegla = true;
+                            certezaMinima = Math.min(certezaMinima, h.getCerteza());
+                            hechosCondicion.add(h);
+                            trazas.add("   Cumple (O): " + c.toString());
+                            break;
+                        }
+                    }
+                } else {
+                    cumpleRegla = true;
+                    for (Condicion c : regla.getCondiciones()) {
+                        hecho h = verificarHecho(c);
+                        if (h == null || !c.evaluar(h.getValor()) || h.getCerteza() <= UMBRAL_CERTEZA) {
+                            cumpleRegla = false;
+                            trazas.add("   No cumple (Y): " + c.toString());
+                            break;
+                        } else {
+                            certezaMinima = Math.min(certezaMinima, h.getCerteza());
+                            hechosCondicion.add(h);
+                            trazas.add("   Cumple (Y): " + c.toString());
+                        }
                     }
                 }
 
-                if (cumpleTodas) {
-                    // Extraer atributo y valor del resultado de la regla
+                if (cumpleRegla) {
                     String[] partesResultado = regla.getResultado().split(" ");
                     if (partesResultado.length >= 3) {
                         String atributoRes = partesResultado[0];
@@ -61,17 +96,19 @@ public class MotorInferencia {
 
                         if (!hechos.contains(nuevoHecho)) {
                             hechos.add(nuevoHecho);
-                            trazas.add("   🎯 Nueva inferencia: " + nuevoHecho.toString());
                             nuevaInferencia = true;
+                            inferenceGraph.add(new InferenceStep(regla, hechosCondicion, nuevoHecho, iteracion));
+                            trazas.add("    Nueva inferencia: " + nuevoHecho.toString());
                         }
                     }
                 }
             }
+            iteracion++;
             trazas.add("-----------------------------");
         } while (nuevaInferencia);
 
-        trazas.add("✅ Inferencia finalizada\n");
-        trazas.add("\n🧩 Hechos base:");
+        trazas.add("Inferencia finalizada\n");
+        trazas.add("\n Hechos finales:");
         for (hecho h : hechos) {
             trazas.add("   • " + h.toString());
         }
@@ -82,15 +119,19 @@ public class MotorInferencia {
     private hecho verificarHecho(Condicion condicion) {
         for (hecho h : hechos) {
             if (h.getAtributo().equalsIgnoreCase(condicion.getAtributo())) {
-                // La condición se evalúa contra el valor del hecho
                 if (condicion.evaluar(h.getValor())) {
-                    return h; // Devuelve el hecho si la condición es verdadera
+                    return h;
                 }
             }
         }
-        return null; // No se encontró un hecho que cumpla la condición
+        return null;
     }
-     public Set<hecho> getHechos() {
+
+    public Set<hecho> getHechos() {
         return hechos;
+    }
+
+    public List<InferenceStep> getInferenceGraph() {
+        return inferenceGraph;
     }
 }

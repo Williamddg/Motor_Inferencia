@@ -72,8 +72,8 @@ public class Resultados extends AppCompatActivity {
         menu3.setOnClickListener(v -> recreate());
         menu4.setOnClickListener(v -> {
             Intent intent = new Intent(this, Grafo.class);
-            if (motor != null && motor.getHechos() != null) {
-                intent.putExtra("hechos", (Serializable) motor.getHechos());
+            if (motor != null && motor.getInferenceGraph() != null) {
+                intent.putExtra("inferenceGraph", (Serializable) motor.getInferenceGraph());
             }
             startActivity(intent);
         });

@@ -146,8 +146,13 @@ public class Nueva_condicion extends AppCompatActivity {
                 return;
             }
 
-            Condicion nuevaCond = new Condicion(atributo, operador, valor);
+            String conector = spinnerYO.getSelectedItem().toString();
+            boolean negado = false; // puedes agregar un checkbox si luego quieres manejar "NO"
+
+// Crear condición
+            Condicion nuevaCond = new Condicion(atributo, operador, valor, conector, negado);
             reglaSeleccionada.agregarCondicion(nuevaCond);
+
 
             Toast.makeText(this, "Condición agregada a la regla " + nombreRegla, Toast.LENGTH_SHORT).show();
 

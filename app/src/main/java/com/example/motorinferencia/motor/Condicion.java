@@ -1,58 +1,57 @@
 package com.example.motorinferencia.motor;
 
-public class Condicion {
+import java.io.Serializable;
+
+public class Condicion implements Serializable {
+
     private String atributo;
     private String operador;
     private String valor;
+    private String conector; // "Y" u "O"
+    private boolean negado;  // por si luego agregas negación lógica
 
-    public Condicion(String atributo, String operador, String valor) {
+    public Condicion(String atributo, String operador, String valor, String conector, boolean negado) {
         this.atributo = atributo;
         this.operador = operador;
         this.valor = valor;
+        this.conector = conector;
+        this.negado = negado;
     }
 
     public String getAtributo() { return atributo; }
     public String getOperador() { return operador; }
     public String getValor() { return valor; }
+    public String getConector() { return conector; }
+    public boolean isNegado() { return negado; }
 
-    @Override
-    public String toString() {
-        return atributo + " " + operador + " " + valor;
-    }
-
-    // Evalúa si una condición es verdadera dado un valor actual
-    public boolean evaluar(String valorActual) {
+    public boolean evaluar(String valorHecho) {
         try {
-            double actual = Double.parseDouble(valorActual);
-            double esperado = Double.parseDouble(valor);
-
+            double valHecho = Double.parseDouble(valorHecho);
+            double valCond = Double.parseDouble(valor);
             switch (operador) {
                 case "=":
-                    return actual == esperado;
+                    return valHecho == valCond;
                 case ">":
-                    return actual > esperado;
+                    return valHecho > valCond;
                 case "<":
-                    return actual < esperado;
+                    return valHecho < valCond;
                 case ">=":
-                    return actual >= esperado;
+                    return valHecho >= valCond;
                 case "<=":
-                    return actual <= esperado;
+                    return valHecho <= valCond;
                 case "!=":
-                    return actual != esperado;
-                default:
-                    return false; // operador no reconocido
-            }
-
-        } catch (NumberFormatException e) {
-            // Si no son números, comparar como texto
-            switch (operador) {
-                case "=":
-                    return valorActual.equalsIgnoreCase(valor);
-                case "!=":
-                    return !valorActual.equalsIgnoreCase(valor);
+                    return valHecho != valCond;
                 default:
                     return false;
             }
+        } catch (NumberFormatException e) {
+            return valorHecho.equalsIgnoreCase(valor);
         }
+    }
+
+    @Override
+    public String toString() {
+        String texto = atributo + " " + operador + " " + valor;
+        return negado ? "NO (" + texto + ")" : texto;
     }
 }

@@ -1,7 +1,9 @@
 package com.example.motorinferencia.motor;
 
 import java.io.Serializable;
-public class hecho implements Serializable{
+import java.util.Objects;
+
+public class hecho implements Serializable {
     private String atributo;
     private String valor;
     private double certeza;
@@ -15,7 +17,6 @@ public class hecho implements Serializable{
     public String getAtributo() { return atributo; }
     public String getValor() { return valor; }
     public double getCerteza() { return certeza; }
-    public void setCerteza(double certeza) { this.certeza = certeza; }
 
     @Override
     public boolean equals(Object o) {
@@ -27,7 +28,7 @@ public class hecho implements Serializable{
 
     @Override
     public int hashCode() {
-        return (atributo.toLowerCase() + "::" + valor.toLowerCase()).hashCode();
+        return Objects.hash(atributo.toLowerCase(), valor.toLowerCase());
     }
 
     @Override

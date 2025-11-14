@@ -1,9 +1,10 @@
 package com.example.motorinferencia.motor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Regla {
+public class Regla implements Serializable {
     private String nombre;
     private List<Condicion> condiciones;
     private String resultado;
